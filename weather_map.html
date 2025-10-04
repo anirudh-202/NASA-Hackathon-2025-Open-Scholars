@@ -75,7 +75,7 @@
       "getFillColor": "@@=[0, 128, 255, 180]",
       "getPosition": "@@=[longitude, latitude]",
       "getRadius": 40000,
-      "id": "25e78abc-ff0b-40d7-85d5-94ec0d36d5eb",
+      "id": "c8f19576-91b4-4fb7-852f-4c8bf9c878a1",
       "pickable": true
     }
   ],
@@ -101,66 +101,14 @@
     });
 
   </script>
-  <script>
-    const apiKey = "YOUR_OPENWEATHERMAP_API_KEY"; // 🔑 Get one free from https://openweathermap.org/api
-    
-    // Function to fetch weather for a given lat/lon
-    function fetchWeather(lat, lon, city) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-    
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          const weather = data.weather[0].description;
-          const temp = data.main.temp;
-          alert(`🌤️ ${city}\nTemperature: ${temp}°C\nCondition: ${weather}`);
-        })
-        .catch(err => alert("⚠️ Could not fetch weather data."));
-    }
-    
-    // When a city is clicked
-    deckInstance.setProps({
-      onClick: info => {
-        if (info.object) {
-          const { latitude, longitude, city } = info.object;
-    
-          // Zoom in
-          deckInstance.setProps({
-            initialViewState: {
-              latitude,
-              longitude,
-              zoom: 7,
-              pitch: 30
-            }
-          });
-    
-          // Fetch and show weather
-          fetchWeather(latitude, longitude, city);
-    
-          // Show back button
-          document.getElementById('back-btn').style.display = 'block';
-        }
-      }
-    });
-    
-    // Function to zoom out to the full map
-    function zoomOut() {
-      deckInstance.setProps({
-        initialViewState: {
-          latitude: 20,
-          longitude: 0,
-          zoom: 1.5,
-          pitch: 0
-        }
-      });
-      document.getElementById('back-btn').style.display = 'none';
-    }
-    </script>
-    
-    <!-- Add a Back button -->
-    <button id="back-btn" 
-            onclick="zoomOut()" 
-            style="display:none; position:absolute; top:10px; left:10px; z-index:1000; background:#333; color:white; border:none; padding:10px; border-radius:5px;">
-      ⬅ Back
-    </button>    
+  <!-- Add a Back button -->
+  <button id="back-btn" 
+    onclick="zoomOut()" 
+    style="display:none; position:absolute; top:10px; left:10px; z-index:1000; background:#333; color:white; border:none; padding:10px; border-radius:5px;">
+    ⬅ Back
+  </button>  
+
+<!-- Link the external JS file -->
+<script src="show_weather.js"></script>
+
 </html>
