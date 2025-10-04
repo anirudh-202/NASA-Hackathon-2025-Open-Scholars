@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 20,
+    "longitude": 0,
+    "zoom": 1.5
+  },
+  "layers": [
+    {
+      "@@type": "ScatterplotLayer",
+      "data": [
+        {
+          "city": "New York",
+          "latitude": 40.7128,
+          "longitude": -74.006
+        },
+        {
+          "city": "Los Angeles",
+          "latitude": 34.0522,
+          "longitude": -118.2437
+        },
+        {
+          "city": "Chicago",
+          "latitude": 41.8781,
+          "longitude": -87.6298
+        },
+        {
+          "city": "Houston",
+          "latitude": 29.7604,
+          "longitude": -95.3698
+        },
+        {
+          "city": "Phoenix",
+          "latitude": 33.4484,
+          "longitude": -112.074
+        },
+        {
+          "city": "Albuquerque",
+          "latitude": 35.106766,
+          "longitude": -106.629181
+        }
+      ],
+      "getFillColor": "@@=[0, 128, 255, 180]",
+      "getPosition": "@@=[longitude, latitude]",
+      "getRadius": 40000,
+      "id": "25e78abc-ff0b-40d7-85d5-94ec0d36d5eb",
+      "pickable": true
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': '<b>City:</b> {city}', 'style': {'color': 'white'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+  <script>
+    const apiKey = "YOUR_OPENWEATHERMAP_API_KEY"; // 🔑 Get one free from https://openweathermap.org/api
+    
+    // Function to fetch weather for a given lat/lon
+    function fetchWeather(lat, lon, city) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+    
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          const weather = data.weather[0].description;
+          const temp = data.main.temp;
+          alert(`🌤️ ${city}\nTemperature: ${temp}°C\nCondition: ${weather}`);
+        })
+        .catch(err => alert("⚠️ Could not fetch weather data."));
+    }
+    
+    // When a city is clicked
+    deckInstance.setProps({
+      onClick: info => {
+        if (info.object) {
+          const { latitude, longitude, city } = info.object;
+    
+          // Zoom in
+          deckInstance.setProps({
+            initialViewState: {
+              latitude,
+              longitude,
+              zoom: 7,
+              pitch: 30
+            }
+          });
+    
+          // Fetch and show weather
+          fetchWeather(latitude, longitude, city);
+    
+          // Show back button
+          document.getElementById('back-btn').style.display = 'block';
+        }
+      }
+    });
+    
+    // Function to zoom out to the full map
+    function zoomOut() {
+      deckInstance.setProps({
+        initialViewState: {
+          latitude: 20,
+          longitude: 0,
+          zoom: 1.5,
+          pitch: 0
+        }
+      });
+      document.getElementById('back-btn').style.display = 'none';
+    }
+    </script>
+    
+    <!-- Add a Back button -->
+    <button id="back-btn" 
+            onclick="zoomOut()" 
+            style="display:none; position:absolute; top:10px; left:10px; z-index:1000; background:#333; color:white; border:none; padding:10px; border-radius:5px;">
+      ⬅ Back
+    </button>    
+</html>
