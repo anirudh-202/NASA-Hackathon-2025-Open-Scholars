@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 37.0902,
+    "longitude": -95.7129,
+    "pitch": 0,
+    "zoom": 4
+  },
+  "layers": [
+    {
+      "@@type": "ScatterplotLayer",
+      "data": [
+        {
+          "ch4_emissions": 250,
+          "city": "New York",
+          "co2_emissions": 5000,
+          "latitude": 40.7128,
+          "longitude": -74.006
+        },
+        {
+          "ch4_emissions": 180,
+          "city": "Los Angeles",
+          "co2_emissions": 4300,
+          "latitude": 34.0522,
+          "longitude": -118.2437
+        },
+        {
+          "ch4_emissions": 210,
+          "city": "Chicago",
+          "co2_emissions": 3800,
+          "latitude": 41.8781,
+          "longitude": -87.6298
+        },
+        {
+          "ch4_emissions": 230,
+          "city": "Houston",
+          "co2_emissions": 4500,
+          "latitude": 29.7604,
+          "longitude": -95.3698
+        },
+        {
+          "ch4_emissions": 160,
+          "city": "Phoenix",
+          "co2_emissions": 3200,
+          "latitude": 33.4484,
+          "longitude": -112.074
+        },
+        {
+          "ch4_emissions": 180,
+          "city": "Albuquerque",
+          "co2_emissions": 2900,
+          "latitude": 35.106766,
+          "longitude": -106.629181
+        }
+      ],
+      "getFillColor": "@@=[255, 0, 0, 160]",
+      "getPosition": "@@=[longitude, latitude]",
+      "getRadius": "@@=ch4_emissions",
+      "id": "9cb30fa9-32ff-4851-8e18-0e27c52c1867",
+      "pickable": true,
+      "radiusScale": 100
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': '<b>City:</b> {city}<br/><b>CH4 Emissions:</b> {ch4_emissions} kg<br/><b>CO2 Emissions:</b> {co2_emissions} kg', 'style': {'color': 'white'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>
